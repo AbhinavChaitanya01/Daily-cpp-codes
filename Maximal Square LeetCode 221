@@ -1,0 +1,36 @@
+//Question- Given an m x n binary matrix filled with 0's and 1's, find the largest square containing only 1's and return its area.
+// https://leetcode.com/problems/maximal-square/
+// DP solution
+class Solution {
+public:
+    int solve(vector<vector<char>>& matrix,int row, int col, int &maxSide){
+        // if(row>=matrix.size()||col>=matrix[0].size())return 0;
+        // if(dp[row][col]!=-1)return dp[row][col];
+        int rowSize= matrix.size();
+        int colSize= matrix[0].size();
+        vector<vector<int>>dp(rowSize+1, vector<int>(colSize+1, 0));
+        for(int i=rowSize-1;i>=0;i--){
+            for(int j=colSize-1;j>=0;j--){
+                int top= dp[i+1][j];
+                int diagonal= dp[i][j+1];
+                int left= dp[i+1][j+1];
+                if(matrix[i][j]=='1'){
+                   int currSide=min(top, min(diagonal,left))+1;
+                   maxSide= max(maxSide,currSide);
+                   dp[i][j]=currSide;
+                }
+                else dp[i][j]=0;
+            }
+        }
+        return dp[0][0]; 
+    }
+    
+    int maximalSquare(vector<vector<char>>& matrix) {
+        // int rowSize= matrix.size();
+        // int colSize= matrix[0].size();
+        // vector<vector<int>>dp(rowSize+1, vector<int>(colSize+1, -1));
+        int maxSide=0;
+        solve(matrix, 0, 0, maxSide);
+        return maxSide * maxSide;
+    }
+};

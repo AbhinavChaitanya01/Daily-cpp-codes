@@ -1,0 +1,94 @@
+684. Redundant Connection
+
+Statement - 
+In this problem, a tree is an undirected graph that is connected and has no cycles.You are given a graph that started as a tree with n nodes labeled from 1 to n, with one additional edge added. The added edge has two different vertices chosen from 1 to n, and was not an edge that already existed. The graph is represented as an array edges of length n where edges[i] = [ai, bi] indicates that there is an edge between nodes ai and bi in the graph.
+Return an edge that can be removed so that the resulting graph is a tree of n nodes. If there are multiple answers, return the answer that occurs last in the input.
+
+Example 1:
+Input: edges = [[1,2],[1,3],[2,3]]
+Output: [2,3]
+
+// Intuition- The problem is basically just about detection of cycle and that the there shall be multiple answers so we need to return the answer edge that occurs last in the input. Thus, we can solve using bfs or Dfs, but to ensure the last condition we shall be using the Disjoint set Union (Union Find) concept in the above problem.
+
+~~~~~~~~~~~~~~~~~~~ CODE ~~~~~~~~~~~~~~~~~
+class Solution {
+public:
+    // void bfs(unordered_map<int, list<int>>&adj,unordered_map< int , bool >&visited,int node, vector<int>&ans){
+    //     unordered_map< int, int > parent;
+    //     parent[node]=-1;
+    //     visited[node]=1; 
+    //     queue<int>q;
+    //     q.push(node);
+    //     while(!q.empty()){
+    //         int tempNode= q.front();
+    //         q.pop();
+    //         for(auto neighbour: adj[tempNode]){
+    //             if(visited[neighbour]==1 && neighbour!=parent[tempNode]){
+    //                 ans[0]=tempNode;
+    //                 ans[1]=neighbour;
+    //             }
+    //             else if(!visited[neighbour]){
+    //                 q.push(neighbour);
+    //                 visited[neighbour]=1;
+    //                 parent[neighbour]= tempNode;
+    //             }
+    //         }
+    //     }
+    // }
+
+    // I realised that bfs gave correct answers but that condition of rreturning the answer occuring last in the case of multiple possible answers really sucked!
+
+    //  I hope that DSU will be a saviour!
+    void makeset(vector<int>&parent){
+        for(int i=0;i<parent.size();i++){
+            parent[i]=i;
+        }
+    }
+    int findParent(vector<int>&parent, int node){
+        if(parent[node]==node)return node;
+        return parent[node]= findParent(parent, parent[node]);
+    }
+    void unionSet(vector<int> & parent,int u, int v,vector<int> & rank){
+        u= findParent(parent, u);
+        v= findParent(parent, v);
+        if(rank[u]>rank[v])parent[v]=u;
+        else if(rank[u]<rank[v])parent[u]=v;
+        else{
+            parent[v]=u;
+            rank[u]++;
+        }
+    }
+    vector<int> findRedundantConnection(vector<vector<int>>& edges) {
+        // unordered_map<int, list<int>>adj;
+        // for(int i=0; i<edges.size();i++){
+        //     int u = edges[i][0];
+        //     int v= edges[i][1];
+        //     adj[u].push_back(v);
+        //     adj[v].push_back(u);
+        // }
+        // unordered_map< int , bool > visited;
+        // vector<int>ans(2);
+        // for(int i=0;i<=edges.size();i++){
+        //     if(!visited[i]){
+        //         bfs(adj, visited, i,ans);
+        //     }
+        // }
+        // sort(ans.begin(),ans.end());
+        // return ans;
+        vector<int>parent(edges.size()+1);
+        vector<int>rank(edges.size()+1,0);
+        vector<int>ans(2);
+        makeset(parent);
+        for(int i=0;i<edges.size();i++){
+            int u=findParent(parent, edges[i][0]);
+            int v= findParent(parent, edges[i][1]);
+            // if (u == v) it means they are in same disjoint set and thus a cycle
+            if (u == v){
+                ans[0]=edges[i][0];
+                ans[1]=edges[i][1];
+            }
+            else unionSet(parent,u,v,rank);
+        }
+        return ans;
+    }
+};

@@ -1,0 +1,20 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+typedef vector<int> vi;
+typedef vector<vi> vii;
+typedef vector<ll> vll;
+typedef pair<int,int> pii;
+typedef pair<long,long> pll;
+typedef vector<pii> vpii;
+
+#define REP(i,x,y) for(int i=x;i<y;i++)
+#define F first
+#define S second
+
+int main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    return 0;
+}

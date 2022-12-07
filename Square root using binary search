@@ -1,0 +1,28 @@
+// Binary Search approach to find the square root of a number.
+// O(logn)
+// Avoiding the sqrt() STL
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~  CODE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+class Solution {
+public:
+    int mySqrt(int x) {
+        int start=1;
+        int end=x;
+        long long int root;
+        while(start<=end){
+            long long int mid= start+(end-start)/2;
+            long long int sq= mid*mid;
+            if(sq==x){
+                root=mid;
+                break;
+            }
+            else if(sq<x){
+                root=mid;
+                start=mid+1;
+            }
+            else{
+                end=mid-1;
+            }
+        }
+        return root;
+    }
+};

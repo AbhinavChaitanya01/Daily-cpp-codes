@@ -1,0 +1,54 @@
+#include<bits/stdc++.h>
+using namespace std;
+bool checkPrime(int n){
+    bool prime=true;
+    for(int i=2;i<=sqrt(n);i++){
+        if(n%i==0){
+            prime=false;
+            break;
+        }
+    }
+    return prime;
+}
+int findLargestFactor(int num){
+    int ans;
+    for(int i=2;i<=sqrt(num)+1;i++){
+        if(num%i==0){
+            if(checkPrime(i)){
+                ans=i;
+            }
+        }
+    }
+    return ans;
+}
+int main(){
+    int n, fact;
+    cin>>n>>fact;
+    bool prime=true;
+    for(int i=2;i<=sqrt(n);i++){
+        if(n%i==0){
+            prime=false;
+            break;
+        }
+    }
+    if(prime){
+        int ans=0;
+        int num=n;
+        while(fact/num){
+            ans+=fact/num;
+            num*=n;
+        }
+        cout<<ans<<endl;
+    }
+    else{
+        int factor= findLargestFactor(n);
+        int ans=0;
+        int num=factor;
+        while(fact/num){
+            ans+=fact/num;
+            num*=factor;
+        }
+        cout<<ans<<endl;
+    }
+    return 0;
+}

@@ -1,0 +1,41 @@
+// You have two types of tiles: a 2 x 1 domino shape and a tromino shape. You may rotate these shapes.
+// Given an integer n, return the number of ways to tile an 2 x n board. Since the answer may be very large, return it modulo 109 + 7.
+// In a tiling, every square must be covered by a tile. Two tilings are different if and only if there are two 4-directionally adjacent cells on the board such that exactly one of the tilings has both squares occupied by a tile.
+
+// Example 1:
+// Input: n = 3
+// Output: 5
+
+// Example 2:
+// Input: n = 1
+// Output: 1
+
+class Solution {
+public:
+    int mod = 1e9+7;
+    long long int solve(vector<vector<long long int>> &dp, int n, bool isBothEmpty){
+        // base cases
+        if(n <= 1) return (isBothEmpty ? 1 : 0);
+        if(n <= 2) return (isBothEmpty ? 2 : 1);
+        if(dp[n][isBothEmpty] != -1) return dp[n][isBothEmpty];
+        long long int ans = 0;
+        if(isBothEmpty){
+            // place one domino vertically
+            ans += solve(dp,n-1,true);
+            // place two domino horizontally
+            ans += solve(dp,n-2,true);
+            // place one tromino (2 ways)
+            ans += 2*solve(dp,n-1,false);
+        } else {
+            // place one domino horizontally
+            ans += solve(dp,n-1,false);
+            // place one tromino 
+            ans += solve(dp,n-2,true);
+        }
+        return dp[n][isBothEmpty] = ans%mod;
+    }
+    int numTilings(int n) {
+        vector<vector<long long int>> dp(n+1, vector<long long int>(2,-1));
+        return solve(dp, n, true);
+    }
+};

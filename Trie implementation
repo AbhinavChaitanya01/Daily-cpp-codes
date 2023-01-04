@@ -1,0 +1,93 @@
+LeetCode - 208
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ CODE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// A structure to maintain the trie nodes and its reference nodes.
+class referenceNode{
+    // array to store the pointer to next refrence Node of a node if such a node exists.
+    referenceNode* reference[26];
+
+    // flag variable to tell if it is a terminal node.
+    bool flag = false;
+
+    public:
+
+    // Boolean function to check if the character of the word we want to insert is already present at that node.
+    bool containsKey(char ch){
+        return reference[ch-'a']!=NULL;
+    }
+
+    // If the node is not contained put it
+    void putNode(char ch, referenceNode* Node){
+        reference[ch-'a']=Node;
+    }
+
+    // This function shall help in getting to the next Node of the currNode
+    referenceNode* getNextNode(char ch){
+        return reference[ch-'a'];
+    }
+
+    // This function shall set the Terminal Node of the trie for that inserted word as True
+    void setTerminalNode(){
+        flag= true;
+    }
+
+    // This function shall help determine if the node I'm standing at is the Terminal Node or Not.
+    bool isTerminal(){
+        return flag;
+    }
+};
+
+class Trie {
+    private: 
+    // This shall acts as root node of this trie
+    referenceNode* root;
+public:
+    Trie() {
+        // initialise the root for that particular trie
+        root= new referenceNode();
+    }
+    
+    void insert(string word) {
+        // T.C. = O(word.length())
+        // Start traversing from the root
+        referenceNode* currNode= root;
+        for(int i=0;i<word.length();i++){
+            if(!currNode->containsKey(word[i])){
+                currNode->putNode(word[i], new referenceNode());
+            }
+            currNode= currNode->getNextNode(word[i]);
+        }
+        currNode->setTerminalNode();
+    }
+    
+    bool search(string word) {
+        referenceNode* currNode= root;
+        for(int i=0;i<word.length();i++){
+            if(!currNode->containsKey(word[i])){
+                return false;
+            }
+            currNode= currNode->getNextNode(word[i]);
+        }
+        return currNode->isTerminal();
+    }
+    
+    bool startsWith(string prefix) {
+        referenceNode* currNode= root;
+        for(int i=0;i<prefix.length();i++){
+            if(!currNode->containsKey(prefix[i])){
+                return false;
+            }
+            currNode=currNode->getNextNode(prefix[i]);
+        }
+        return true;
+    }
+};
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie* obj = new Trie();
+ * obj->insert(word);
+ * bool param_2 = obj->search(word);
+ * bool param_3 = obj->startsWith(prefix);
+ */
